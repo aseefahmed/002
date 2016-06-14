@@ -30,7 +30,7 @@ var BlankonApp = function(){
             BlankonApp.handleTooltip();
             BlankonApp.handlePopover();
             BlankonApp.handlePanelToolAction();
-            BlankonApp.handleSparkline();
+//            BlankonApp.handleSparkline();
             BlankonApp.handleClearCookie();
             BlankonApp.handleBoxModal();
             BlankonApp.handleCopyrightYear();
@@ -600,14 +600,14 @@ var BlankonApp = function(){
         // =========================================================================
         // JQUERY SPARKLINE
         // =========================================================================
-        handleSparkline: function () {
-            if($('.sparklines').length){
-                $('.average').sparkline('html',{type: 'bar', barColor: '#37BC9B', height: '30px'});
-                $('.traffic').sparkline('html',{type: 'bar', barColor: '#8CC152', height: '30px'});
-                $('.disk').sparkline('html',{type: 'bar', barColor: '#E9573F', height: '30px'});
-                $('.cpu').sparkline('html',{type: 'bar', barColor: '#F6BB42', height: '30px'});
-            }
-        },
+//        handleSparkline: function () {
+//            if($('.sparklines').length){
+//                $('.average').sparkline('html',{type: 'bar', barColor: '#37BC9B', height: '30px'});
+//                $('.traffic').sparkline('html',{type: 'bar', barColor: '#8CC152', height: '30px'});
+//                $('.disk').sparkline('html',{type: 'bar', barColor: '#E9573F', height: '30px'});
+//                $('.cpu').sparkline('html',{type: 'bar', barColor: '#F6BB42', height: '30px'});
+//            }
+//        },
 
         // =========================================================================
         // CLEAR ALL COOKIE

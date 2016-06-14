@@ -14,5 +14,7 @@
 
 Route::group(['middleware' => 'web'], function()
 {
-    Route::get('/dashboard', ['uses' => 'DashboardController@viewdashboard', 'as' => 'dashboard']);
+
+    Route::get('/dashboard', ['uses' => 'DashboardController@viewdashboard', 'as' => 'Dashboard']);
+    Route::get('/logout', ['uses' => 'DashboardController@doLogout', 'as' => 'Logout']);
 });

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>Tabbed Forms And Tab Controls Live Preview</title>
+    <title>{{ Lang::get('login::common.site_title') }} | {{ Lang::get('login::common.page_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{url('public/styles/bootstrap.min.css')}}" rel="stylesheet" />
     <link href="{{url('public/styles/bootstrap-responsive.min.css')}}" rel="stylesheet" />
@@ -22,6 +22,7 @@
         <![endif]-->
 </head>
 <body class=" ">
+
     @yield('content')
 
 

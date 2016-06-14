@@ -4,12 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class DashboardController extends Controller
 {
     public function viewdashboard()
     {
-        return view('dashboard.dashboard');
+        if(Auth::check())
+        {
+                return view('dashboard.dashboard');
+        }
+        else
+        {
+                return view('login::index');
+        }
+        
+    }
+
+    public function doLogout()
+    {
+        Auth::logout();
+
+        return Redirect::to('/login');
     }
 }

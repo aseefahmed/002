@@ -6,27 +6,27 @@ var BlankonDashboard = function () {
         // CONSTRUCTOR APP
         // =========================================================================
         init: function () {
-            BlankonDashboard.counterOverview();
+//            BlankonDashboard.counterOverview();
             BlankonDashboard.callModal1();
-            BlankonDashboard.weatherIcons();
+//            BlankonDashboard.weatherIcons();
             BlankonDashboard.gritterNotification();
             BlankonDashboard.visitorChart();
             BlankonDashboard.realtimeStatusChart();
             BlankonDashboard.countNumber();
-            BlankonDashboard.dropzone();
+//            BlankonDashboard.dropzone();
         },
 
         // =========================================================================
         // COUNTER OVERVIEW
         // =========================================================================
-        counterOverview: function () {
-            if($('.counter').length){
-                $('.counter').counterUp({
-                    delay: 10,
-                    time: 4000
-                });
-            }
-        },
+//        counterOverview: function () {
+//            if($('.counter').length){
+//                $('.counter').counterUp({
+//                    delay: 10,
+//                    time: 4000
+//                });
+//            }
+//        },
 
         // =========================================================================
         // CALL MODAL FIRST
@@ -245,20 +245,20 @@ var BlankonDashboard = function () {
         // =========================================================================
         // WEATHER ICONS
         // =========================================================================
-        weatherIcons: function () {
-            var icons = new Skycons({"color": "white"},{"resizeClear": true}),
-                list  = [
-                    "clear-day", "clear-night", "partly-cloudy-day",
-                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
-                    "fog"
-                ],
-                i;
-
-            for(i = list.length; i--; )
-                icons.set(list[i], list[i]);
-
-            icons.play();
-        },
+//        weatherIcons: function () {
+//            var icons = new Skycons({"color": "white"},{"resizeClear": true}),
+//                list  = [
+//                    "clear-day", "clear-night", "partly-cloudy-day",
+//                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+//                    "fog"
+//                ],
+//                i;
+//
+//            for(i = list.length; i--; )
+//                icons.set(list[i], list[i]);
+//
+//            icons.play();
+//        },
 
         // =========================================================================
         // GRITTER NOTIFICATION
@@ -413,40 +413,40 @@ var BlankonDashboard = function () {
                 // Set up the control widget
                 var updateInterval = 1000;
 
-                var plot4 = $.plot("#realtime-status-chart", [ getRandomData() ], {
-                    colors: ["#F6BB42"],
-                    series: {
-                        lines: {
-                            fill: true,
-                            lineWidth: 0
-                        },
-                        shadowSize: 0	// Drawing is faster without shadows
-                    },
-                    grid: {
-                        borderColor: '#ddd',
-                        borderWidth: 1,
-                        labelMargin: 10
-                    },
-                    xaxis: {
-                        color: '#eee'
-                    },
-                    yaxis: {
-                        min: 0,
-                        max: 100,
-                        color: '#eee'
-                    }
-                });
-
-                function update() {
-
-                    plot4.setData([getRandomData()]);
-
-                    // Since the axes don't change, we don't need to call plot.setupGrid()
-                    plot4.draw();
-                    setTimeout(update, updateInterval);
-                }
-
-                update();
+//////                var plot4 = $.plot("#realtime-status-chart", [ getRandomData() ], {
+//////                    colors: ["#F6BB42"],
+//////                    series: {
+//////                        lines: {
+//////                            fill: true,
+//////                            lineWidth: 0
+//////                        },
+//////                        shadowSize: 0	// Drawing is faster without shadows
+//////                    },
+//////                    grid: {
+//////                        borderColor: '#ddd',
+//////                        borderWidth: 1,
+//////                        labelMargin: 10
+//////                    },
+//////                    xaxis: {
+//////                        color: '#eee'
+//////                    },
+//////                    yaxis: {
+//////                        min: 0,
+//////                        max: 100,
+//////                        color: '#eee'
+//////                    }
+//////                });
+////
+////                function update() {
+////
+////                    plot4.setData([getRandomData()]);
+////
+////                    // Since the axes don't change, we don't need to call plot.setupGrid()
+////                    plot4.draw();
+////                    setTimeout(update, updateInterval);
+////                }
+//
+//                update();
             }
         },
 
