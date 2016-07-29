@@ -57,11 +57,7 @@
                 </div>
             </div><!-- /.row -->
             
-            <div id="show_status" class="row col-md-12"></div>
-            <div class="row col-md-12">
-                <div class="col-md-4"></div>
-                <div id="ajax_preloader" class="col-md-8"></div>
-            </div>
+            
             <div class="row">
                 <div class="col-md-9">
                     <!-- Start widget visitor chart -->
@@ -70,10 +66,10 @@
                             <div class="row row-merge">
                                 <div class="col-sm-12">
                                     <div class="table-responsive rounded mb-20">
-                                        <div id="ajax-table">
-                                            <form class="form-horizontal form-bordered" role="form" method="POST" name="add_order_form" id="add_order_form">
+                                        <div>
+                                            <form class="form-horizontal form-bordered" role="form" method="POST" name="update_order_form" id="update_order_form">
+                                                <input type="hidden" value="{{$orders[0]->id}}" name="order_id">
                                                 <div class="form-body">
-
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Supplier / Agent</label>
                                                         <div class="col-sm-4">
@@ -141,22 +137,27 @@
                                                             <input class="form-control" name="weight_per_dzn" value="{{$orders[0]->weight_per_dzn}}" id="weight_dzn" type="number" placeholder="Weight/Dzn" readonly="readonly">
                                                         </div>
                                                     </div><!-- /.form-group -->
-
-                                                    <div class="form-group" id="composition_group">
-                                                        <label class="col-sm-3 control-label">Compositions</label>
-                                                        <div class="col-sm-2">
-                                                            <input class="form-control" name="composition_name"  id="composition_name" type="text" placeholder="Name">
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <input class="form-control" name="composition_percentage" id="composition_percentage" type="number" placeholder="Percentage">
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <input class="form-control" name="composition_yarn_rate" id="composition_yarn_rate" type="number" placeholder="Cost">
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <input class="form-control" name="composition_wastage" id="composition_wastage" type="number" placeholder="Wastage">
-                                                        </div>
-                                                    </div><!-- /.form-group -->
+                                                    {{--*/$compositions = json_decode($orders[0]->compositions)/*--}}
+                                                    {{--*/$row = 0/*--}}
+                                                    @if(count($compositions) > 0)
+                                                        @foreach($compositions as $composition)
+                                                        {{--*/$row++/*--}}
+                                                            <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Compositions </label>
+                                                            @foreach($composition as $item)
+                                                                    <div class="col-sm-2">
+                                                                        <input class="form-control" style="background-color:burlywood;color:green" type="text" value="{{$item}}" readonly="">
+                                                                    </div>    
+                                                            @endforeach                                                                    
+                                                            </div><!-- /.form-group -->               
+                                                        @endforeach
+                                                    @else
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Compositions</label>
+                                                            N/A                                                                
+                                                            </div><!-- /.form-group --> 
+                                                    @endif
+                                                        
 
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Qty per Dzn /Total Yarn Weight / Total Yarn Cost</label>
@@ -231,24 +232,53 @@
                                                             <input class="form-control" value="{{$orders[0]->cost_of_making}}" name="cost_of_making" id="cost_of_making" type="number" placeholder="Cost of Making" readonly="readonly">
                                                         </div>
                                                     </div><!-- /.form-group -->
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">L/C Confirmed?</label>
-                                                        <div class="col-sm-4 ckbox ckbox-success">
-                                                            <input id="l_c_confirmed" value="1" type="checkbox" name="lc_confirmed">
-                                                            <label for="l_c_confirmed">Yes</label>
-                                                        </div>
-                                                    </div><!-- /.form-group -->
+                                                    
+                                                    @if($orders[0]->lc_confirmed==0)
+                                                        <div class="form-group" id="lc-confirmed-div">
+                                                            <label class="col-sm-3 control-label">L/C Confirmed?</label>
+                                                            <div class="col-sm-4 ckbox ckbox-success">
+                                                                <input id="l_c_confirmed" value="1" type="checkbox" name="l_c_confirmed">
+                                                                <label for="l_c_confirmed">Yes</label>
+                                                            </div>  
+                                                        </div><!-- /.form-group -->
+                                                        
+                                                    @else
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">L/C Documents</label>
+                                                            <div class="col-sm-4 ckbox ckbox-success">
+                                                                <?php 
+                                                                    $pos = strpos($orders[0]->lc_doc,'.');
+                                                                    
+                                                                    $ext = substr($orders[0]->lc_doc,$pos+1);
+                                                                ?>
+                                                                <a href='{{url('/public/uploads/LC/'.$orders[0]->lc_doc)}}' target='_blank'><img src="{{url('/public/img/ico/'.$ext.'.png')}}" height="40px"></a>
+                                                            </div>  
+                                                        </div><!-- /.form-group -->
+                                                    @endif    
 
                                                     <div class="form-group fileinput fileinput-new" data-provides="fileinput" id="show_lc_doc_div" style="display:none">
                                                         <label class="col-sm-3 text-right control-label">Upload L/C Document</label>
                                                         <div class="col-sm-8">
-                                                            <input class="input-file-js" type="file" name="l_c_doc" class="file-loading">
-                                                        </div>                                
+                                                           <input class="input-file-js" type="file" name="l_c_doc">
+                                                        </div>            
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 text-right control-label">&nbsp;</label>
+                                                            <div class="col-sm-8">
+                                                                <a class="btn btn-success" name="update-lc" id="update-lc">UPDATE</a>
+                                                            </div>                                
+                                                        </div><!-- /.form-group -->
                                                     </div><!-- /.form-group -->
+                                                    @if($orders[0]->lc_confirmed == "")
+                                                        
+                                                    @endif
                                                     
 
                                                 </div><!-- /.form-body -->
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-4"></div>
+                                                    <div id="ajax_preloader" class="col-md-8"></div>
+                                                </div>
+                                                <div id="show_status" class="row col-md-12"></div>
                                             </form>
                                         </div>
                                     </div><!-- /.table-responsive -->

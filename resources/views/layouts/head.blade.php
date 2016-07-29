@@ -24,14 +24,14 @@
     <!-- End of Common CSS Files -->
     
     <!--------------- For Data Tables ---------------------->
-    @if(Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Designation List' || 
+    @if(Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Requisitions' || Route::currentRouteName() == 'Sent Requisitions' || Route::currentRouteName() == 'Draft Requisitions' || Route::currentRouteName() == 'Designation List' || Route::currentRouteName() == 'Order Report' || 
                             Route::currentRouteName() == 'Department List' || Route::currentRouteName() == 'Employees List' || Route::currentRouteName() == 'Orders List')
         <link href="{{ url('public/assets/global/plugins/bower_components/datatables/css/dataTables.bootstrap.css') }}" rel="stylesheet">
         <link href="{{ url('public/assets/global/plugins/bower_components/datatables/css/datatables.responsive.css') }}" rel="stylesheet">
         
     @endif
     <!--------------- For HTML Select Element with Combo Box ---------------------->
-    @if(Route::currentRouteName() == 'Supplier Details' || Route::currentRouteName() == 'Order Details' || Route::currentRouteName() == 'Add Employee' || Route::currentRouteName() == 'Orders List')    
+    @if(Route::currentRouteName() == 'Supplier Details' || Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Orders Requisition' || Route::currentRouteName() == 'Order Report' || Route::currentRouteName() == 'Order Details' || Route::currentRouteName() == 'Add Employee' || Route::currentRouteName() == 'Orders List')    
         <link href="{{ url('public/assets/global/plugins/bower_components/select2-ng/select2.css') }}" rel="stylesheet">
         <link href="{{ url('public/assets/global/plugins/bower_components/select2-ng/select2-bootstrap.css') }}" rel="stylesheet">
     
@@ -41,7 +41,10 @@
         <link href="{{ url('public/assets/global/plugins/bower_components/fileinput/css/fileinput.min.css') }}" rel="stylesheet">
         
     @endif
-
+    @if(Route::currentRouteName() == 'Orders Requisition')  
+        <link href="{{ url('public/assets/global/plugins/bower_components/chosen_v1.2.0/chosen.min.css') }}" rel="stylesheet">
+        
+    @endif
 <!--        
     <link href="{{ url('public/assets/admin/css/plugins.css') }}" rel="stylesheet">
     <link href="{{ url('public/assets/global/plugins/bower_components/animate.css/animate.min.css') }}" rel="stylesheet">

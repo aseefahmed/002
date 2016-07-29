@@ -10,6 +10,9 @@
 	"autoload": {
 		"psr-4": {
 			"Modules\\Hrm\\": ""
-		}
+		},
+                "files": [
+                        "modules/Production/Http/helpers.php"
+                        ]
 	}
 }

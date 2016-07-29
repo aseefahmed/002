@@ -207,84 +207,47 @@
                     <!-- Start notifications -->
                     <li id="tour-5" class="dropdown navbar-notification">
 
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o"></i><span class="count label label-danger rounded">6</span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o"></i><span class="count label label-danger rounded"><?php if(count(getNotifications())>0){echo count(getNotifications());}?></span></a>
 
                         <!-- Start dropdown menu -->
                         <div class="dropdown-menu animated flipInX">
                             <div class="dropdown-header">
-                                <span class="title">Notifications <strong>(10)</strong></span>
-                                <span class="option text-right"><a href="#"><i class="fa fa-cog"></i> Setting</a></span>
+                                <span class="title">Notifications <strong>({{count(getNotifications())}})</strong></span>
+                                <span class="option text-right"><a href="#"><i class="fa fa-cog"></i></a></span>
                             </div>
-                            <div class="dropdown-body niceScroll">
+                            <div class="dropdodsswn-body niceScroll">
 
                                 <!-- Start notification list -->
                                 <div class="media-list small">
 
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><i class="fa fa-share-alt fg-info"></i></div>
-                                        <div class="media-body">
-                                            <span class="media-text"><strong>Dolanan Remi : </strong><strong>Chris Job,</strong><strong>Denny Puk</strong> and <strong>Joko Fernandes</strong> sent you <strong>5 free energy boosts and other request</strong></span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">3 minutes</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
+                                    @if(count(getNotifications())>0)
+                                        @foreach(getNotifications() as $notifications)
+                                             <a href="{{url($notifications->landing_url)}}" class="media">
+                                                 <div class="media-object pull-left"><img src="{{ url('/public/img/uploads/profile/'.$notifications->last_sender_profile_pic) }}" alt="admin"></div>
+                                                 <div class="media-body">
+                                                     <span class="media-text"><strong>{{$notifications->num_of_notifications}} </strong><strong>{{$notifications->description}}</strong></span>
+                                                     <!-- Start meta icon -->
+                                                     <?php
+                                                         $current_time = time();
+                                                         $notification_time = $current_time - strtotime($notifications->updated_at);
+                                                         $notification_time_in_min = intval(($notification_time/60)%60);
 
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><i class="fa fa-cogs fg-success"></i></div>
-                                        <div class="media-body">
-                                            <span class="media-text">Your sistem is updated</span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">5 minutes</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
+                                                         if($notification_time_in_min < 5)
+                                                             $duration = "Few  minutes ago";
+                                                         else if($notification_time_in_min > 5 && $notification_time_in_min <60)
+                                                             $duration = "$notification_time_in_min  minutes ago";
+                                                         else
+                                                             $duration = "$notification_time_in_min/60  hours ago";
+                                                     ?>
+                                                     <span class="media-meta">{{$duration}}</span>
+                                                     <!--/ End meta icon -->
+                                                 </div><!-- /.media-body -->
+                                             </a><!-- /.media -->
 
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><i class="fa fa-ban fg-danger"></i></div>
-                                        <div class="media-body">
-                                            <span class="media-text">3 Member is BANNED</span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">5 minutes</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
-
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><img class="img-circle" src="{{ url('public/img/avatar/50/10.png') }}" alt=""/></div>
-                                        <div class="media-body">
-                                            <span class="media-text">daddy pushed to project Blankon version 1.0.0</span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">45 minutes</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
-
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><i class="fa fa-user fg-info"></i></div>
-                                        <div class="media-body">
-                                            <span class="media-text">Change your user profile</span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">1 days</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
-
-                                    <a href="#" class="media">
-                                        <div class="media-object pull-left"><i class="fa fa-book fg-info"></i></div>
-                                        <div class="media-body">
-                                            <span class="media-text">Added new article</span>
-                                            <!-- Start meta icon -->
-                                            <span class="media-meta">1 days</span>
-                                            <!--/ End meta icon -->
-                                        </div><!-- /.media-body -->
-                                    </a><!-- /.media -->
-
-                                    <!-- Start notification indicator -->
-                                    <a href="#" class="media indicator inline">
-                                        <span class="spinner">Load more notifications...</span>
-                                    </a>
-                                    <!--/ End notification indicator -->
+                                        @endforeach
+                                    @else
+                                        <h3>No Notifications Found</h3>
+                                    @endif    
 
                                 </div>
                                 <!--/ End notification list -->
@@ -376,7 +339,7 @@
         <ul id="tour-9" class="sidebar-menu">
 
             <!-- Start navigation - HRM Module -->
-            <li class="submenu active">
+            <li class="submenu">
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-home"></i></span>
                     <span class="text">HRM</span>
@@ -430,7 +393,7 @@
                     <span class="selected"></span>
                 </a>
                 <ul>
-                    <li class="submenu">
+                    <li class="submenu ">
                         <a href="javascript:void(0);">
                             <span class="icon"><i class="fa fa-list-alt"></i></span>
                             <span class="text">Requisition</span>
@@ -447,7 +410,13 @@
             <!--/ End navigation - Requisition Module -->
 
             <!-- Start navigation - Production Module -->
-            <li class="submenu">
+            @if(Route::currentRouteName() == 'Suppliers List')
+                {{--*/$cls = "active"/*/--}}
+            @else 
+                {{--*/$cls = ""/*/--}}
+            @endif
+            
+            <li class="submenu {{$cls}}">
                 <a href="javascript:void(0);">
                     <span class="icon"><i class="fa fa-bolt"></i></span>
                     <span class="text">PRODUCTION</span>
@@ -455,7 +424,7 @@
                     <span class="selected"></span>
                 </a>
                 <ul>
-                    <li class="submenu">
+                    <li class="submenu {{$cls}}">
                         <a href="javascript:void(0);">
                             <span class="icon"><i class="fa fa-list-alt"></i></span>
                             <span class="text">Suppliers</span>
@@ -484,8 +453,27 @@
                             <span class="arrow"></span>
                         </a>
                         <ul>
-                            <li><a href="{{ url('/production/orders-list') }}">Orders</a></li>
+                            <li><a href="{{ url('/production/report/orders') }}">Orders</a></li>
                             <li><a href="{{ url('/production/invoices') }}">Purchase</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);">
+                            <span class="icon"><i class="fa fa-list-alt"></i></span>
+                            <span class="text">Requisitions</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul>
+                            <li><a href="{{ url('/production/requisitions/create') }}">Create Requisition</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="{{ url('/production/requisitions') }}">New Requisitions</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="{{ url('/production/requisitions/draft') }}">Draft Requisitions</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="{{ url('/production/requisitions/sent') }}">Sent Requisitions</a></li>
                         </ul>
                     </li>
                 </ul>

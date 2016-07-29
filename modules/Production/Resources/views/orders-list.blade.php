@@ -33,10 +33,11 @@
                             <table class="table table-striped table-lilac datatable-ajax">
                                 <thead>
                                 <tr>
+                                    <th>&nbps;</th>
+                                    <th width="5%">#</th>
                                     <th>Supplier</th>
-                                    <th>Style</th>
-                                    <th>Brand</th>
-                                    <th>Date</th>
+                                    <th>Total FOB</th>
+                                    <th>Delivary Date</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -44,10 +45,11 @@
                                 <tbody>
                                 @foreach($orders as $order)
                                     <tr>
-                                        <td width="20%"><img width="20%" src="{{ url('/public/img/uploads/orders/'.$order->photo)}}"><?php echo $order->supplier_name;?></td>
-                                        <td><?php echo $order->style;?></td>
-                                        <td><?php echo $order->brand;?></td>
-                                        <td><?php echo $order->order_date;?></td>
+                                        <td width="10%"><img height="70px" width="70px" src="{{ url('/public/img/uploads/orders/'.$order->photo)}}"></td>
+                                        <td width="10%"><?php echo $order->id;?></td>
+                                        <td><?php echo $order->supplier_name;?></td>
+                                        <td><?php echo $order->total_fob;?></td>
+                                        <td><?php echo $order->delivery_date;?></td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -67,10 +69,11 @@
                                 <!--tfoot section is optional-->
                                 <tfoot>
                                 <tr>
+                                    <th>&nbps;</th>
+                                    <th width="5%">#</th>
                                     <th>Supplier</th>
-                                    <th>Style</th>
-                                    <th>Brand</th>
-                                    <th>Date</th>
+                                    <th>Total FOB</th>
+                                    <th>Delivary Date</th>
                                     <th>Action</th>
                                 </tr>
                                 </tfoot>
@@ -168,7 +171,7 @@
                                     <input class="form-control" name="weight_per_dzn" id="weight_dzn" type="number" placeholder="Weight/Dzn">
                                 </div>
                             </div><!-- /.form-group -->
-
+                            <input type="hidden" name="compositions" id="compositions">
                             <div class="form-group" id="composition_group">
                                 <label class="col-sm-3 control-label">Compositions</label>
                                 <div class="col-sm-2">
@@ -186,6 +189,9 @@
                                 <div class="col-sm-1">
                                     <a class="btn btn-success" id="composition_plus"><i class="fa fa-plus"></i></a>
                                     <a class="btn btn-primary" id="composition_refresh"><i class="fa fa-refresh"></i></a>
+                                </div>
+                                <div id="composition-div-group">
+                                    
                                 </div>
                             </div><!-- /.form-group -->
                             

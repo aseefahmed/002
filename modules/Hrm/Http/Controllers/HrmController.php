@@ -30,13 +30,13 @@ class HrmController extends Controller {
     {
         $data['departments'] = Department::all();
         $data['designations'] = Designation::all();
-        $data['supervisors'] = Employee::where('email', '!=', Auth::user()->email)->get();
+        $data['supervisors'] = DB::table('users')->where('email', '!=', Auth::user()->email)->get();
         
         return view('hrm::add-employee', $data);
     }
     
     public function submitEmployeeDetails(Request $request)
-    {   print_r($request->all());     
+    {      
         $employee = new Employee();
         $time = time();
         $employee->title = $request->title;
@@ -59,7 +59,6 @@ class HrmController extends Controller {
         $employee->branch = $request->branch;
         $employee->acc_city = $request->acc_city;
         $employee->ifsc_code = $request->ifsc_code;
-        $employee->email = $time;
         
         if($request->photo != ""){
             $file_extension = $request->file('photo')->guessExtension();
@@ -79,7 +78,7 @@ class HrmController extends Controller {
         $user->dept_id = $request->department_id;
         $user->designation_id = $request->designation_id;
         $user->emp_role = $request->emp_role;
-        $user->email = $time;
+        $user->email = $request->username;
         $user->password = Hash::make($request->password);   
         $user->save();
         

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableDepartments1302 extends Migration
+class CreateRequisitionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,11 @@ class AlterTableDepartments1302 extends Migration
      */
     public function up()
     {
-        Schema::table('departments', function (Blueprint $table) {
-            $table->string('department_name');
-            $table->text('description');
+        Schema::create('requisitions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('requisition_type');
+            $table->integer('created_by');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AlterTableDepartments1302 extends Migration
      */
     public function down()
     {
-        Schema::table('departments', function (Blueprint $table) {
-            //
-        });
+        Schema::drop('requisitions');
     }
 }

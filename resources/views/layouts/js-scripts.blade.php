@@ -13,21 +13,27 @@
 <!-- START @CORE PLUGINS -->
 
 <!--------------- For Data Tables ---------------------->
-@if(Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Designation List' || 
-                                Route::currentRouteName() == 'Department List' || Route::currentRouteName() == 'Employees List'  || Route::currentRouteName() == 'Orders List')
+@if(Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Draft Requisitions' || Route::currentRouteName() == 'Requisitions'  || Route::currentRouteName() == 'Designation List' || Route::currentRouteName() == 'Order Report' || 
+                                Route::currentRouteName() == 'Department List' || Route::currentRouteName() == 'Employees List'  
+                                || Route::currentRouteName() == 'Orders List' || Route::currentRouteName() == 'Sent Requisitions' )
     
     <script src="{{ url('public/assets/global/plugins/bower_components/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('public/assets/global/plugins/bower_components/datatables/js/dataTables.bootstrap.js') }}"></script>
     <script src="{{ url('public/assets/global/plugins/bower_components/datatables/js/datatables.responsive.js') }}"></script>
 @endif
 <!--------------- For HTML Select Element with Combo Box ---------------------->
-@if(Route::currentRouteName() == 'Supplier Details' || Route::currentRouteName() == 'Order Details' || Route::currentRouteName() == 'Add Employee' || Route::currentRouteName() == 'Orders List')    
+@if(Route::currentRouteName() == 'Supplier Details' || Route::currentRouteName() == 'Orders Requisition' || Route::currentRouteName() == 'Suppliers List' || Route::currentRouteName() == 'Order Details' || Route::currentRouteName() == 'Order Report' || Route::currentRouteName() == 'Add Employee' || Route::currentRouteName() == 'Orders List')    
     <script src="{{ url('public/assets/global/plugins/bower_components/select2-ng/select2.min.js') }}"></script>
 @endif
 
 <!--------------- For HTML File Input---------------------->
 @if(Route::currentRouteName() == 'Orders List' || Route::currentRouteName() == 'Add Employee' || Route::currentRouteName() == 'Order Details')    
     <script src="{{ url('public/assets/global/plugins/bower_components/fileinput/fileinput.min.js') }}"></script>
+@endif
+
+<!--------------- Multiple Chosen Select---------------------->
+@if(Route::currentRouteName() == 'Orders Requisition')    
+    <script src="{{ url('public/assets/global/plugins/bower_components/chosen_v1.2.0/chosen.jquery.min.js') }}"></script>
 @endif
 
 
@@ -69,6 +75,35 @@
 
 <script>
     $(document).ready(function() {
+        
+        row = 0;
+        
+        function orderFiltering()
+        {
+            $('#ajax_preloader').html("<img src='{{ url('/public/img/loading.gif') }}'> Processing ...");
+            formData = new FormData($("#filter_order_form")[0]);
+            $.ajax({
+                url: "{{ url('/production/filter-orders') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(result){
+                    console.log(result)
+                    $('#ajax_preloader').css('display', 'none');
+                    $('#ajax-table').html(result);
+                    $('.datatable-ajax').dataTable();
+                    
+                }
+            }).fail(function(result){
+                $('#ajax_preloader').css('display', 'none');
+                $('#show_status').html(
+                 "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Error!</strong> There was some technical issue. Contact to the administrator.</div>"
+                 );
+            });
+        }
+        
         if($('#description')[0])
         {
             CKEDITOR.replace( 'description', {
@@ -76,11 +111,115 @@
             });
         }
 
+        $(".selectchoosen").change(function(){
+            if($(".selectchoosen").val() == 0)
+            {
+                $('#orders_review').html('');
+            }
+            formData = new FormData($("#orders_requisition_form")[0]);
+            $.ajax({
+                url: "{{ url('/production/view-orders-summery') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(result){
+                    $('#orders_review').html(result);
+                    $('.newselect2js').select2();
+                    $('#add_to_requisition').prop('disabled', false)
+                    
+                }
+            })
+        });
+
+        $("#add_to_requisition").click(function(e){
+            
+            e.preventDefault();
+            
+            $('.create-requisition-div').prop('disabled',false);
+            $('.select2js').prop('disabled',false);
+            
+            formData = new FormData($("#orders_requisition_form")[0]);
+            $.ajax({
+                url: "{{ url('/production/create-requisition') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(result){
+                    $('#data_not_found_label').css('display','none');
+                    $('#ajax-response').append(result);
+                    
+                }
+            })
+        });
+
+        $(".action_on_requisition").click(function(e){
+            
+            $('#ajax_preloader').html("<img src='{{ url('/public/img/loading.gif') }}'> Processing ...");
+            action = $(this).prop('id');
+           
+            $.ajax({
+                url: "{{ url('/production/requisition/change-flag') }}/"+action,
+                method: "GET",
+                success: function(result){
+                    console.log(result)
+                    $('#ajax_preloader').html("<div class='alert alert-success'>Operation Successful!</div>");
+                    $('#'+action).html("APPROVED");
+                    $('.action_on_requisition').css("display", "none");
+                    
+                }
+            }).fail(function(result){
+                $('#ajax_preloader').html("<div class='alert alert-danger'>Operation Failed!</div>");
+                
+            });
+        });
+        
+        $(".save_as_draft_requisition").click(function(e){
+            action = $(this).val();
+            if(action == "Save as Draft")
+                action = "draft";
+            
+            e.preventDefault();
+            
+            $('#ajax-preloader').html("<img src='{{ url('/public/img/loading.gif') }}'> Processing ...");
+                        
+            formData = new FormData($("#send_requisition_form")[0]);
+            $.ajax({
+                url: "{{ url('/production/draft-requisition') }}/"+action,
+                method: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(result){
+                    
+                    $('#ajax-preloader').html("<div class='alert alert-success'>Operation Successfull!</div>");
+                    $('#ajax-response').append(result);
+                    $(".save_as_draft_requisition").css('display', 'none');
+                    $("#add_to_requisition").prop('disabled', true);
+                    $(".selectchoosen").prop('disabled', true);
+                    
+                    
+                }
+            }).fail(function(result){
+                $('#ajax-preloader').html("<div class='alert alert-danger'>Operation Failed!</div>");
+                
+            });
+        });
+        
         if($('.datatable-ajax').length > 0)
         {
             $('.datatable-ajax').dataTable();
         }
-$('.inputmaskjs').inputmask("mm/dd/yyyy");  
+        
+        $('.inputmaskjs').inputmask("mm/dd/yyyy");
+        
+        $('.inputmaskjs').blur(function(){
+            orderFiltering();
+        })
 
         $.ajaxSetup({
             headers: {
@@ -91,20 +230,14 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
         if($('.select2js').length > 0)
         {
             $('.select2js').select2();
-        }        
+        }     
+              
 
         $('#reset-btn').click(function(e){
             $('form')[2].reset();
             $('#description').code('');
         });
 
-
-//        $('.editable_designation_name').editable({
-//            type: 'text',
-//            ajaxOptions: {
-//                type: 'POST'
-//            }
-//        });
 
         $('#edit_btn').click(function(e){
             e.preventDefault();
@@ -116,6 +249,71 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
             $('#edit_btn').hide();
             $('#update_btn').show();
             $('#cancel_btn').show();
+        });
+        
+        
+        $('.order-filtering').change(function(){
+            orderFiltering();
+        });
+        
+        $('#suppiler_chk').click(function(){
+            if($('#suppiler_chk').prop('checked') == true)
+                $('#supplier').prop('disabled', false)
+            else
+                $('#supplier').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
+        });
+        
+        $('#agent_chk').click(function(){
+            if($('#agent_chk').prop('checked') == true)
+                $('#agent').prop('disabled', false)
+            else
+                $('#agent').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
+        });
+        
+        $('#brand_chk').click(function(){
+            if($('#brand_chk').prop('checked') == true)
+                $('#brand').prop('disabled', false)
+            else
+                $('#brand').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
+        });
+        
+        $('#buyer_chk').click(function(){
+            if($('#buyer_chk').prop('checked') == true)
+                $('#buyer').prop('disabled', false)
+            else
+                $('#buyer').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
+        });
+        
+        $('#style_chk').click(function(){
+            if($('#style_chk').prop('checked') == true)
+                $('#style').prop('disabled', false)
+            else
+                $('#style').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
+        });
+        
+        $('#delivery_chk').click(function(){
+            if($('#delivery_chk').prop('checked') == true)
+                $('#delivery_date').prop('disabled', false)
+            else
+                $('#delivery_date').prop('disabled', 'disabled')
+            
+            orderFiltering()
+                
         });
         
         $('#cancel_btn').click(function(){
@@ -188,7 +386,7 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
         });
           
           
-        row = 0;
+        
         $('#add-employee-btn').click(function(){
             $('#ajax_preloader').html("<img src='{{ url('/public/img/loading.gif') }}'> Processing ...");
             formData = new FormData($("#add-employee-form")[0]);
@@ -201,7 +399,6 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
                 cache: false,
                 processData:false,
                 success: function(result){
-                    console.log(result)
                     row++;
                     arr = ['alert alert-success', 'alert alert-primary', 'alert alert-info', 'alert alert-default'];
                     if(row%4 == 0)
@@ -250,8 +447,43 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
                  "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Error!</strong> There was some technical issue. Contact to the administrator.</div>"
                  );
             });
-
-
+        });
+        
+         $('#update-lc').click(function(){
+            $('#ajax_preloader').html("<img src='{{ url('/public/img/loading.gif') }}'> Processing ...");
+            formData = new FormData($("#update_order_form")[0]);
+            $.ajax({
+                url: "{{ url('/production/update-order') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(result){
+                    row++;
+                    arr = ['alert alert-success', 'alert alert-primary', 'alert alert-info', 'alert alert-default'];
+                    if(row%4 == 0)
+                        cls = arr[0];
+                    else if(row%4 == 1)
+                        cls = arr[1];
+                    else if(row%4 == 2)
+                        cls = arr[2];
+                    else if(row%4 == 3)
+                        cls = arr[3];
+                    
+                    $('#ajax_preloader').css('display', 'none');
+                    $('#show_lc_doc_div').css('display', 'none');
+                    $('#lc-confirmed-div').css('display', 'none');
+                    $('#show_status').html(
+                     "<div class='"+cls+"'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Well done!</strong> You successfully updated order details.</div>"
+                     );
+                }
+            }).fail(function(result){
+                $('#ajax_preloader').css('display', 'none');
+                $('#show_status').html(
+                 "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Error!</strong> There was some technical issue. Contact to the administrator.</div>"
+                 );
+            });
         });
 
         if($(".input-file-js")[0])
@@ -260,7 +492,7 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
                 showUpload: false,
                 previewFileType: "image",
                 browseClass: "btn btn-success",
-                browseLabel: "Pick Image",
+                browseLabel: "Pick File",
                 browseIcon: "<i class=\"fa fa-camera-retro\"></i> ",
                 removeClass: "btn btn-danger",
                 removeLabel: "Delete",
@@ -281,13 +513,30 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
                 cache: false,
                 processData:false,
                 success: function(result){
+                    row++;
+                    arr = ['alert alert-success', 'alert alert-inverse', 'alert alert-teals', 'alert alert-lilac'];
+                    if(row%4 == 0)
+                        cls = arr[0];
+                    else if(row%4 == 1)
+                        cls = arr[1];
+                    else if(row%4 == 2)
+                        cls = arr[2];
+                    else if(row%4 == 3)
+                        cls = arr[3];
+                    
                     $('#ajax_preloader').css('display', 'none');
                     $('#show_status').html(
-                     "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Well done!</strong> You successfully created an order.</div>"
+                     "<div class='"+cls+"'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Well done!</strong> You successfully created an order.</div>"
                      );
                     $('#ajax-table').html(result);
                     $('.datatable-ajax').dataTable();
                     $('#add_order_form')[0].reset();
+                    $('#composition-div-group').html('');
+                    $('#compositions').val('');
+                    total_yarn_weight = 0;
+                    total_yarn_cost = 0;
+                    compositions = new Array()
+                    n=0;
                 }
             }).fail(function(result){
                 $('#ajax_preloader').css('display', 'none');
@@ -398,15 +647,25 @@ $('.inputmaskjs').inputmask("mm/dd/yyyy");
         
         total_yarn_weight = 0;
         total_yarn_cost = 0;
+        compositions = new Array()
+        n=0;
         $('#composition_plus').click(function(){
             composition_name = $('#composition_name').val();
             composition_percentage = $('#composition_percentage').val();
             composition_yarn_rate = $('#composition_yarn_rate').val();
             composition_wastage = $('#composition_wastage').val();
-            $('#composition_group').append("<label class='col-sm-3 control-label'> </label><div class='col-sm-2 composition_name_arr'><input class='form-control' readonly='readonly' name='composition_name_arr[]' value='"+composition_name+"'type='text' placeholder='Name'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_percentage_arr[]' value='"+composition_percentage+"'type='number' placeholder='Percentage'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_yarn_rate_arr[]' value='"+composition_yarn_rate+"'type='number' placeholder='Percentage'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_wastage_arr[]' value='"+composition_wastage+"'type='number' placeholder='Percentage'></div>");          
-          
+            compositions[n] = [composition_name, composition_percentage, composition_yarn_rate, composition_wastage];
+            
+            composition_str = JSON.stringify(compositions);
+            $('#compositions').val(composition_str)
+            n++;
+            
+            $('#composition-div-group').css('display','block');
+            $('#composition-div-group').append("<label class='col-sm-3 control-label'> </label><div class='composition-div'><div class='col-sm-2 composition_name_arr'><input class='form-control' readonly='readonly' name='composition_name_arr' value='"+composition_name+"'type='text' placeholder='Name'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_percentage_arr' value='"+composition_percentage+"'type='number' placeholder='Percentage'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_yarn_rate_arr' value='"+composition_yarn_rate+"'type='number' placeholder='Percentage'></div><div class='col-sm-2'><input class='form-control' readonly='readonly' name='composition_wastage_arr' value='"+composition_wastage+"'type='number' placeholder='Percentage'></div></div>");          
+         
             total_yarn_weight =  Number(total_yarn_weight) + Number($("#qty_per_dzn").val()*$("#weight_dzn").val()*composition_percentage/100*(1+Number(composition_wastage/100)));
             total_yarn_cost = Number(total_yarn_cost) + Number(Number($("#qty_per_dzn").val()*$("#weight_dzn").val()*composition_percentage/100*(1+Number(composition_wastage/100)))*composition_yarn_rate);
+            
             $('#total_yarn_weight').val(Math.round(total_yarn_weight));
             $('#total_yarn_cost').val(Math.round(total_yarn_cost));
             
