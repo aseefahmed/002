@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableOrders1432 extends Migration
+class AlterTableOrders001432 extends Migration
 {
     /**
      * Run the migrations.
