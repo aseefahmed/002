@@ -1,4 +1,6 @@
-resource "aws_instance" "myec2" {
-   ami = "ami-082b5a644766e0e6f"
-   instance_type = "t2.micro"
+resource "digitalocean_droplet" "myweb" {
+    image = "ubuntu-18-04-x64"
+    name = "web-3"
+    region = "nyc1"
+    size = "s-1vcpu-1gb"
 }
