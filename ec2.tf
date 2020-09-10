@@ -1,6 +1,9 @@
+variable "SIZE" {}
+variable "IMAGE" {}
+
 resource "digitalocean_droplet" "myweb" {
-    image = "ubuntu-18-04-x64"
+    image = var.IMAGE
     name = "web-3"
     region = "nyc1"
-    size = "s-1vcpu-1gb"
+    size = var.SIZE
 }
